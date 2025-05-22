@@ -1,0 +1,111 @@
+#include <stdio.h>
+
+#define MAX 10  // Maximum number of processes/resources
+
+// Declare required global variables
+int p, r;  // p = number of processes, r = number of resource types
+int avail[MAX];              // Available resources
+int max[MAX][MAX];           // Max demand of each process
+int alloc[MAX][MAX];         // Resources currently allocated to each process
+int need[MAX][MAX];          // Resources still needed by each process
+
+// Function to input all required data
+void input() {
+    // Get number of processes and resources
+    printf("Enter number of processes and resources: ");
+    scanf("%d%d", &p, &r);
+
+    // Get available resources
+    printf("Enter available resources (space-separated): ");
+    for (int i = 0; i < r; i++) {
+        scanf("%d", &avail[i]);
+    }
+
+    // Get Max matrix values (maximum resource need for each process)
+    printf("Enter Max matrix (%d x %d):\n", p, r);
+    for (int i = 0; i < p; i++) {
+        for (int j = 0; j < r; j++) {
+            scanf("%d", &max[i][j]);
+        }
+    }
+
+    // Get Allocation matrix values (currently allocated resources to each process)
+    printf("Enter Allocation matrix (%d x %d):\n", p, r);
+    for (int i = 0; i < p; i++) {
+        for (int j = 0; j < r; j++) {
+            scanf("%d", &alloc[i][j]);
+
+            // Calculate Need matrix = Max - Allocation
+            need[i][j] = max[i][j] - alloc[i][j];
+        }
+    }
+}
+
+// Function to check if the system is in a safe state
+int isSafe() {
+    int work[MAX];         // Temporary array to track available resources
+    int finish[MAX] = {0}; // Indicates whether a process has finished
+    int sequence[MAX];     // To store the safe sequence
+    int count = 0;         // Number of processes in the safe sequence
+
+    // Step 1: Initialize work = available
+    for (int i = 0; i < r; i++) {
+        work[i] = avail[i];
+    }
+
+    // Step 2: Try to find a safe sequence
+    while (count < p) {
+        int found = 0;
+
+        // Find a process which can be completed with current work[]
+        for (int i = 0; i < p; i++) {
+            if (!finish[i]) { // If process i has not finished
+                int j;
+
+                // Check if all needs of process i can be met
+                for (j = 0; j < r; j++) {
+                    if (need[i][j] > work[j]) {
+                        break; // Can't satisfy process i
+                    }
+                }
+
+                if (j == r) { // All resources needed by process i are available
+                    // Pretend to execute process i: release its resources
+                    for (int k = 0; k < r; k++) {
+                        work[k] += alloc[i][k];
+                    }
+
+                    // Add process i to the safe sequence
+                    sequence[count++] = i;
+                    finish[i] = 1;  // Mark it as finished
+                    found = 1;      // At least one process was found in this pass
+                }
+            }
+        }
+
+        if (!found) {
+            // No process could be executed, hence system is not in a safe state
+            break;
+        }
+    }
+
+    // Step 3: Check if all processes are finished
+    if (count == p) {
+        printf("\nSystem is in a SAFE state.\nSafe sequence is: ");
+        for (int i = 0; i < p; i++) {
+            printf("P%d ", sequence[i]);
+        }
+        printf("\n");
+        return 1;
+    } else {
+        printf("\nSystem is in an UNSAFE state (possible deadlock).\n");
+        return 0;
+    }
+}
+
+// Main function
+int main() {
+    input();      // Read all data
+    isSafe();     // Check for safe state
+    return 0;
+}
