@@ -1,0 +1,42 @@
+#include <stdio.h>      // For printf
+#include <pthread.h>    // For pthreads (POSIX threads)
+
+// This is the function that each thread will run
+void* thread_function(void* arg) {
+    // Cast the void* argument to int* and then dereference to get the thread number
+    int thread_num = *(int*)arg;
+
+    // Print which thread is running
+    printf("Thread %d is running\n", thread_num);
+
+    // Return NULL since the thread function returns void*
+    return NULL;
+}
+
+int main() {
+    pthread_t thread1, thread2;  // Declare two thread identifiers
+    int t1 = 1, t2 = 2;          // Arguments to pass to threads (thread numbers)
+
+    // Create the first thread
+    // - &thread1: pointer to thread ID
+    // - NULL: default thread attributes
+    // - thread_function: function to run in the thread
+    // - &t1: argument to pass (address of int t1)
+    pthread_create(&thread1, NULL, thread_function, &t1);
+
+    // Create the second thread (same logic as above, with t2)
+    pthread_create(&thread2, NULL, thread_function, &t2);
+
+    // Wait for thread1 to finish before proceeding
+    pthread_join(thread1, NULL);
+
+    // Wait for thread2 to finish before proceeding
+    pthread_join(thread2, NULL);
+
+    // Print after both threads have completed
+    printf("Both threads have completed execution.\n");
+
+    // Return 0 to indicate successful execution
+    return 0;
+}
+
