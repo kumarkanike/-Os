@@ -1,0 +1,83 @@
+#include <stdio.h>              // Standard input/output functions
+
+#define MAX 25                  // Maximum size for reference string and frames
+
+int main() {
+    int i, j, k, n, f;          // i, j, k: loop variables; n: length of ref string; f: number of frames
+    int count = 0;              // Pointer to replace frame (FIFO position)
+    int pf = 0;                 // Page fault counter
+    int ref[MAX];               // Reference string array
+    int frames[MAX];            // Memory frame array
+
+    // Input length of reference string
+    printf("Enter the length of reference string: ");
+    scanf("%d", &n);            // Read number of pages in reference string
+
+    // Input the reference string
+    printf("Enter the reference string: ");
+    for (i = 0; i < n; i++) {
+        scanf("%d", &ref[i]);   // Read each page number into ref array
+    }
+
+    // Input number of frames
+    printf("Enter number of frames: ");
+    scanf("%d", &f);            // Read how many frames (slots in memory)
+
+    // Initialize all frame slots to -1 (indicates empty)
+    for (i = 0; i < f; i++) {
+        frames[i] = -1;
+    }
+
+    // Print output headers
+    printf("\nThe Page Replacement Process is:\n\n");
+    printf("Page   Frame Status         PF\n");
+    printf("-------------------------------\n");
+
+    // Loop through each page in reference string
+    for (i = 0; i < n; i++) {
+        int found = 0;  // Flag to check if page is already in frame (page hit)
+
+        // Check if current page is already present in frames
+        for (j = 0; j < f; j++) {
+            if (frames[j] == ref[i]) {
+                found = 1;      // Page hit — already in memory
+                break;
+            }
+        }
+
+        // Print the current page being checked
+        printf("%-6d", ref[i]); // Left-align the page number in 6-character space
+
+        if (!found) {
+            // Page fault — insert page at the FIFO position (count)
+            frames[count] = ref[i];           // Replace the oldest page
+            count = (count + 1) % f;          // Move FIFO pointer in circular fashion
+            pf++;                             // Increment page fault counter
+
+            // Print the current state of frames
+            for (k = 0; k < f; k++) {
+                if (frames[k] == -1)
+                    printf("- ");             // Empty slot
+                else
+                    printf("%d ", frames[k]); // Show stored page
+            }
+
+            printf("        PF\n");           // Indicate this was a page fault
+        } else {
+            // Page was found (hit), just show the frame state
+            for (k = 0; k < f; k++) {
+                if (frames[k] == -1)
+                    printf("- ");
+                else
+                    printf("%d ", frames[k]);
+            }
+
+            printf("\n");                     // No page fault, so no "PF"
+        }
+    }
+
+    // Final output: total number of page faults
+    printf("\nThe number of Page faults using FIFO are: %d\n", pf);
+
+    return 0;  // Exit the program
+}
