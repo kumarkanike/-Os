@@ -1,0 +1,83 @@
+#include <stdio.h>
+
+#define MAX 25  // Maximum number of pages and frames
+
+int main() {
+    int ref[MAX], frames[MAX], recent[MAX];
+    int n, f, i, j, k, pf = 0, time = 0;
+
+    // Input reference string length
+    printf("Enter the length of reference string: ");
+    scanf("%d", &n);
+
+    // Input reference string
+    printf("Enter the reference string: ");
+    for (i = 0; i < n; i++) {
+        scanf("%d", &ref[i]);
+    }
+
+    // Input number of frames
+    printf("Enter number of frames: ");
+    scanf("%d", &f);
+
+    // Initialize frames and recent usage time
+    for (i = 0; i < f; i++) {
+        frames[i] = -1;  // -1 means empty
+        recent[i] = -1;  // time of last use
+    }
+
+    // Output header
+    printf("\nThe Page Replacement Process is:\n\n");
+    printf("Page   Frame Status         PF\n");
+    printf("-------------------------------\n");
+
+    for (i = 0; i < n; i++) {
+        int found = 0;  // Flag to indicate hit
+
+        // Check for page hit
+        for (j = 0; j < f; j++) {
+            if (frames[j] == ref[i]) {
+                found = 1;
+                recent[j] = time++;  // Update recent use
+                break;
+            }
+        }
+
+        printf("%-6d", ref[i]);
+
+        if (!found) {
+            // Page fault occurred
+            pf++;
+
+            int lru_index = 0;
+
+            // Find LRU index: empty (-1) gets priority
+            for (j = 1; j < f; j++) {
+                if (frames[j] == -1 || (recent[j] < recent[lru_index])) {
+                    lru_index = j;
+                }
+            }
+
+            // Replace the LRU page with current one
+            frames[lru_index] = ref[i];
+            recent[lru_index] = time++;
+        }
+
+        // Print current state of frames
+        for (k = 0; k < f; k++) {
+            if (frames[k] == -1)
+                printf("- ");
+            else
+                printf("%d ", frames[k]);
+        }
+
+        if (!found)
+            printf("        PF\n");
+        else
+            printf("\n");
+    }
+
+    printf("\nThe number of Page faults using LRU are: %d\n", pf);
+
+    return 0;
+}
