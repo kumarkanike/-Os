@@ -1,0 +1,329 @@
+1⃣Write a JavaScript program to select the elements in HTML page using selectors
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Select Elements Example</title>
+</head>
+<body>
+  <h1 id="title">Hello World</h1>
+  <p class="text">This is a paragraph.</p>
+  <p class="fruit">Apple</p>
+  <p class="fruit">Banana</p>
+  <p class="fruit">Mango</p>
+  <button>Click Me</button>
+
+  <script>
+    // Selecting by ID
+    let heading = document.getElementById("title");
+    console.log("Heading:", heading.innerText);
+
+    // Selecting by class
+    let para = document.getElementsByClassName("text")[0];
+    console.log("Paragraph:", para.innerText);
+
+    // Selecting by tag
+    let btn = document.getElementsByTagName("button")[0];
+    console.log("Button:", btn.innerText);
+
+    // Using querySelector
+    let sameHeading = document.querySelector("#title");
+    console.log("QuerySelector Heading:", sameHeading.innerText);
+
+    // Using querySelectorAll
+    let fruits = document.querySelectorAll(".fruit");
+    fruits.forEach((fruit) => {
+      console.log(fruit.innerText);
+    });
+  </script>
+</body>
+</html>
+Output:
+
+Heading: Hello World
+Paragraph: This is a paragraph
+Button: Click Me
+QuerySelector Heading: Hello World
+Apple
+Banana
+Mango
+2️⃣ Write a JavaScript program to implement the event listeners
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Event Listener Example</title>
+  <style>
+    #myButton {
+      padding: 15px;
+      font-size: 16px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+  </style>
+</head>
+<body>
+  <button id="myButton">Hover or Click Me!</button>
+  <p id="status"></p>
+  <div id="box" style="width:100px; height:100px; background-color:lightgreen;"></div>
+
+  <script>
+    const button = document.getElementById("myButton");
+    const status = document.getElementById("status");
+
+    // Click Event
+    button.addEventListener("click", function() {
+      button.textContent = "Clicked!";
+      button.style.backgroundColor = "green";
+      status.textContent = "Mouse was clicked.";
+    });
+
+    // Mouse Over Event
+    button.addEventListener("mouseover", function() {
+      button.style.backgroundColor = "orange";
+      status.textContent = "Mouse is over the button.";
+    });
+
+    // Mouse Out Event
+    button.addEventListener("mouseout", function() {
+      button.style.backgroundColor = "";
+      status.textContent = "Mouse out over the button.";
+    });
+
+    // Key Down Event
+    document.addEventListener("keydown", function(event) {
+      button.style.backgroundColor = "";
+      status.textContent = `You pressed: ${event.key}`;
+    });
+
+    // Double Click Event
+    const box = document.getElementById("box");
+    button.addEventListener("dblclick", function() {
+      box.textContent = "Double clicked!";
+      box.style.backgroundColor = "yellow";
+      status.textContent = "Button was double clicked.";
+    });
+  </script>
+</body>
+</html>
+3️⃣ Write a React program to implement a counter button using React class components
+import React, { Component } from 'react';
+
+class CounterButtonClassComp extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      count: 0,
+    };
+  }
+
+  handleIncrement = () => {
+    this.setState({ count: this.state.count + 1 });
+  };
+
+  render() {
+    return (
+      <div style={{ textAlign: 'center', marginTop: '50px' }}>
+        <h2>Counter using Class Component</h2>
+        <p>Count: {this.state.count}</p>
+        <button onClick={this.handleIncrement}>Increment</button>
+      </div>
+    );
+  }
+}
+
+export default CounterButtonClassComp;
+// App.js
+import './App.css';
+import CounterButtonClassComp from './CounterBtnUsingClassComp';
+
+function App() {
+  return (
+    <div className="App">
+      <CounterButtonClassComp />
+    </div>
+  );
+}
+
+export default App;
+4️⃣ Write a React program to implement a counter button using React useState hook
+import React, { useState } from 'react';
+
+export function HooksCounterBtn() {
+  const [count, setCount] = useState(0);
+
+  const Increase = () => setCount(count + 1);
+  const Decrease = () => setCount(count - 1);
+
+  return (
+    <div style={{ textAlign: 'center', marginTop: '50px' }}>
+      <button onClick={Increase}> + </button>
+      <h1>{count}</h1>
+      <button onClick={Decrease}> - </button>
+    </div>
+  );
+}
+5️⃣ Write a React program with two React components sharing data using Props
+// Student.js
+import React from 'react';
+
+export const Student = ({ name, sendMessage }) => {
+  const sendToParent = () => {
+    sendMessage(`Hi Parent, I’m your child "${name}"!`);
+  };
+
+  return (
+    <div>
+      <h3>Child Component</h3>
+      <p>Hello, I am {name}</p>
+      <button onClick={sendToParent}>Send Message to Parent</button>
+    </div>
+  );
+};
+// App.js
+import { useState } from 'react';
+import { Student } from './Student';
+
+function App() {
+  const [messageFromChild, setMessageFromChild] = useState('');
+
+  const handleChildData = (msg) => {
+    setMessageFromChild(msg);
+  };
+
+  return (
+    <div className="App">
+      <h2>Parent Component</h2>
+      <p><b>Message from Child:</b> {messageFromChild}</p>
+      <Student name="Aaron" sendMessage={handleChildData} />
+    </div>
+  );
+}
+
+export default App;
+6️⃣ Write a program to develop a small website with multiple routes using Express.js
+const express = require('express');
+const app = express();
+const port = 3010;
+
+app.get('/', (req, res) => {
+  res.send('<h1>Welcome to the Home Page</h1>');
+});
+
+app.get('/about', (req, res) => {
+  res.send('<h1>About Us</h1><p>This page tells you about our website.</p>');
+});
+
+app.get('/contact', (req, res) => {
+  res.send('<h1>Contact Us</h1><p>Email us at info@example.com</p>');
+});
+
+app.get('/services', (req, res) => {
+  res.send('<h1>Our Services</h1><p>These are the services we offer.</p>');
+});
+
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
+});
+7️⃣ Write a program to implement the CRUD operations using Express.js
+const express = require('express');
+const app = express();
+const port = 3000;
+
+app.use(express.json());
+
+let books = [
+  { id: 1, title: "1984", author: "George Orwell" },
+  { id: 2, title: "To Kill a Mockingbird", author: "Harper Lee" }
+];
+
+app.get('/books', (req, res) => {
+  res.json(books);
+});
+
+app.get('/books/:id', (req, res) => {
+  const bookId = parseInt(req.params.id);
+  const book = books.find(b => b.id === bookId);
+  if (book) res.json(book);
+  else res.status(404).send({ message: "Book not found" });
+});
+
+app.post('/books', (req, res) => {
+  const newBook = {
+    id: books.length + 1,
+    title: req.body.title,
+    author: req.body.author
+  };
+  books.push(newBook);
+  res.status(201).json(newBook);
+});
+
+app.put('/books/:id', (req, res) => {
+  const bookId = parseInt(req.params.id);
+  const bookIndex = books.findIndex(b => b.id === bookId);
+  if (bookIndex !== -1) {
+    books[bookIndex] = { id: bookId, ...req.body };
+    res.json(books[bookIndex]);
+  } else res.status(404).send({ message: "Book not found" });
+});
+
+app.delete('/books/:id', (req, res) => {
+  const bookId = parseInt(req.params.id);
+  const bookIndex = books.findIndex(b => b.id === bookId);
+  if (bookIndex !== -1) {
+    books.splice(bookIndex, 1);
+    res.send({ message: "Book deleted successfully" });
+  } else res.status(404).send({ message: "Book not found" });
+});
+
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
+8️⃣ Write a program to establish the connection between API and Database using Express – MySQL driver
+const express = require('express');
+const mysql = require('mysql2');
+const app = express();
+const port = 3000;
+
+app.use(express.json());
+
+const db = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '1234',
+  database: 'bookdb'
+});
+
+db.connect(err => {
+  if (err) throw err;
+  console.log('Connected to MySQL database');
+});
+
+app.get('/books', (req, res) => {
+  const sql = 'SELECT * FROM books';
+  db.query(sql, (err, results) => {
+    if (err) throw err;
+    res.json(results);
+  });
+});
+
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
+9️⃣ Write MySQL queries to create database, create table, and insert/update data
+CREATE DATABASE college_db;
+USE college_db;
+
+CREATE TABLE students (
+  studentId INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100),
+  age INT,
+  course VARCHAR(50),
+  marks DECIMAL(5,2)
+);
+
+INSERT INTO students (name, age, course, marks)
+VALUES ('Kiran', 20, 'FSD', 89.5);
+
+UPDATE students
+SET marks = 90
+WHERE name = 'Kiran';
+
+SELECT * FROM students;
